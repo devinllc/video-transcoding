@@ -74,8 +74,6 @@ Royalty Clause
 If this software or any derivative work is used for commercial purposes, including but not limited to selling, licensing, or integrating into a product or service, the user must pay a royalty fee of 5% of gross revenue generated from the use of the software or derivative works. The fee is due on a quarterly basis and should be paid to the following account:
 
 Account Name: UFDev.LLC
-Account Number: XXXXXXXXXXX
-Bank Name: [Your Bank Name]
 Failure to comply with this royalty agreement will result in legal action.
 
 Disclaimer: This royalty agreement is enforceable under international copyright law. If you wish to modify or remove the royalty clause, please contact the author for licensing options.
