@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Video Player with Resolution Switcher</title>
+  <style>
+    #video-player {
+      width: 100%;
+      max-width: 720px;
+      margin: auto;
+      display: block;
+    }
+
+    #resolution-menu {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #video-input {
+      width: 80%;
+      padding: 10px;
+      margin: 20px auto;
+      display: block;
+      text-align: center;
+    }
+
+    #load-button {
+      display: block;
+      margin: 0 auto;
+      padding: 10px 20px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <input type="text" id="video-input" placeholder="Enter .m3u8 video link here">
+  <button id="load-button">Load Video</button>
+
+  <video id="video-player" controls></video>
+  <div id="resolution-menu">
+    <label for="resolutions">Switch Resolution:</label>
+    <select id="resolutions">
+      <option value="auto">Auto</option>
+    </select>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
+  <script>
+    const video = document.getElementById('video-player');
+    const resolutionMenu = document.getElementById('resolutions');
+    const loadButton = document.getElementById('load-button');
+    const videoInput = document.getElementById('video-input');
+
+    loadButton.addEventListener('click', function () {
+      const videoLink = videoInput.value;
+
+      if (Hls.isSupported()) {
+        const hls = new Hls();
+        hls.loadSource(videoLink);  // Load the video link entered in the input field
+        hls.attachMedia(video);
+
+        hls.on(Hls.Events.MANIFEST_PARSED, function (event, data) {
+          // Clear the previous resolution options
+          resolutionMenu.innerHTML = '<option value="auto">Auto</option>';
+
+          // Populate the resolution menu with available levels
+          data.levels.forEach((level, index) => {
+            const option = document.createElement('option');
+            option.value = index;
+            option.text = `${level.height}p`;
+            resolutionMenu.appendChild(option);
+          });
+
+          // Automatically select "Auto" resolution when it is selected
+          resolutionMenu.addEventListener('change', function () {
+            const selectedResolution = resolutionMenu.value;
+            if (selectedResolution === 'auto') {
+              hls.currentLevel = -1;  // Automatically choose the best level
+            } else {
+              hls.currentLevel = parseInt(selectedResolution);
+            }
+          });
+        });
+
+        hls.on(Hls.Events.LEVEL_SWITCHED, function (event, data) {
+          console.log('Switched to resolution:', hls.levels[data.level].height + 'p');
+        });
+
+      } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+        // For Safari and native HLS support
+        video.src = videoLink;  // Use the video link from the input field
+      }
+    });
+  </script>
+
+</body>
+
+</html>
